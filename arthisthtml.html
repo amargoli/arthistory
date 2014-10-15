@@ -146,6 +146,7 @@
 
         }
         $("#newimage").on("click",refresh);
+        $(document).on("click", "#curimg img", refresh);
 
         $(document).on("click", "ul#choices li", verifyCorrect);
 
