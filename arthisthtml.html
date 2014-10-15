@@ -76,7 +76,7 @@
         "http://i.imgur.com/4VpFVZ6.png"];
 
         function getChoice(array, number) {
-            return $('<li><a id="choice'+number+'">'+array[number]+'"<\/a><\/li>');
+            return $('<li><a id="choice'+number+'">'+array[number]+'<\/a><\/li>');
         }
 
         function refresh() {
@@ -92,15 +92,26 @@
             // Pick category
 
             var category = Math.floor(Math.random() * 3);
-
+            var array;
             if (category == 0) { // Artist
-                $("ul#choices").append(getChoice(artist, curImg));
+                array = artist;
             }
             else if (category == 1) { // Title
-                $("ul#choices").append(getChoice(title, curImg));
+                array = title;
             }
             else if (category == 2) { // Year
-                $("ul#choices").append(getChoice(title, curImg));
+                array = year;
+            }
+            $("ul#choices").append(getChoice(array, curImg));
+
+            var usedIds = [];
+
+            for (var i = 0; i < 3; i++) {
+                var randNum = -1;
+                while (randNum != -1 && usedIds.indexOf(randNum) != -1) {
+                    randNum = Math.floor(Math.random() * image.length);
+                }
+                $("ul#choices").append(getChoice(array, randNum));
             }
 
         }
