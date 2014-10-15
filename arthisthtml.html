@@ -75,8 +75,34 @@
         "http://i.imgur.com/tQUXzL9.png","http://i.imgur.com/lY4J1uc.png",
         "http://i.imgur.com/4VpFVZ6.png"];
 
-        function getChoice(array, number) {
-            return $('<li><a id="choice'+number+'">'+array[number]+'<\/a><\/li>');
+        $.fn.shuffleChildren = function() {
+            $.each(this.get(), function(index, el) {
+                var $el = $(el);
+                var $find = $el.children();
+
+                $find.sort(function() {
+                    return 0.5 - Math.random();
+                });
+
+                $el.empty();
+                $find.appendTo($el);
+            });
+        };
+
+
+        function getChoice(array, number, correct) {
+            var choice = $('<li data-correct="'+correct+'">'+array[number]+'<\/li>');
+            return choice;
+        }
+
+        function verifyCorrect() {
+            console.log($(this).data("correct"));
+            if ($(this).data("correct")) {
+                $(this).css("color", "green");
+            }
+            else {
+                $(this).css("color", "red");
+            }
         }
 
         function refresh() {
@@ -102,21 +128,26 @@
             else if (category == 2) { // Year
                 array = year;
             }
-            $("ul#choices").append(getChoice(array, curImg));
+            var correctChoice = getChoice(array, curImg, "true");
+            $("ul#choices").append(correctChoice);
 
             var usedIds = [];
 
             for (var i = 0; i < 3; i++) {
                 var randNum = -1;
-                while (randNum != -1 && usedIds.indexOf(randNum) != -1) {
+                while (randNum == -1 || usedIds.indexOf(randNum) != -1) {
                     randNum = Math.floor(Math.random() * image.length);
                 }
-                $("ul#choices").append(getChoice(array, randNum));
+                var choice = getChoice(array, randNum, randNum == curImg);
+                $("ul#choices").append(choice);
             }
+
+            $("ul#choices").shuffleChildren();
 
         }
         $("#newimage").on("click",refresh);
 
+        $(document).on("click", "ul#choices li", verifyCorrect);
 
         refresh();
 
